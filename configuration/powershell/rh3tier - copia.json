@@ -68,8 +68,8 @@
     }
   },
   "variables": {
-    "imagePublisher": "bitnami",
-    "imageOffer": "nodejs",
+    "imagePublisher": "Canonical",
+    "imageOffer": "UbuntuServer",
     "vmSize": "Standard_A0",
     "vmStorageAccountType": "Standard_GRS",
     "vmStorageAccountName": "[concat(uniqueString(resourceGroup().id),'storage')]",
@@ -102,7 +102,7 @@
     "appTierVmNicName": "[concat(variables('appTierVmName'), '-nic-')]",
     "databaseTierVmNicName": "[concat(variables('databaseTierVmName'), '-nic-')]",
     "jumpVmNicName": "[concat(variables('jumpVmName'), '-nic')]",
-    "redHatsku": "4-3",
+    "redHatsku": "7.3",
     "Publisher": "RedHat",
     "Offer": "RHEL",
     "webTierVmName": "web-vm",
@@ -696,12 +696,7 @@
         "name": "WebTierVMLoop",
         "count": "[parameters('webTierVmCount')]"
       },
-       "plan": {
-        "name": "[variables('redHatsku')]",
-        "publisher": "[variables('imagePublisher')]",
-        "product": "[variables('imageOffer')]"
-      },
-     "properties": {
+      "properties": {
         "availabilitySet": {
           "id": "[resourceId('Microsoft.Compute/availabilitySets',concat(variables('availSetName'),'1'))]"
         },
@@ -714,11 +709,11 @@
           "adminPassword": "[parameters('adminPassword')]"
         },
         "storageProfile": {
-                    "imageReference": {
-                        "publisher": "[variables('imagePublisher')]",
-                        "offer": "[variables('imageOffer')]",
-                        "sku": "[parameters('redHatsku')]",
-                        "version": "11.4.1812101005"
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[parameters('ubuntuOSVersion')]",
+            "version": "latest"
           },
           "osDisk": {
             "name": "[concat(variables('webTierVmName'),'-', copyindex(1),'_OSDisk')]",
@@ -738,6 +733,28 @@
             "enabled": true,
             "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', variables('diagStorageAccountName'))).primaryEndpoints.blob]"
           }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('vmName'), '/CustomScript')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', concat(variables('webTierVmName'),'-', copyindex(1)))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/mongodb-nodejs-high-availability/Script/templateScript.sh",
+            "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/mongodb-nodejs-high-availability/nodeservice/app.js"
+          ],
+          "commandToExecute": "sh templateScript.sh"
         }
       }
     },
@@ -774,11 +791,11 @@
           "adminPassword": "[parameters('adminPassword')]"
         },
         "storageProfile": {
-                    "imageReference": {
-                        "publisher": "bitnami",
-                        "offer": "nodejs",
-                        "sku": "4-3",
-                        "version": "11.4.1812101005"
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[parameters('ubuntuOSVersion')]",
+            "version": "latest"
           },
           "osDisk": {
             "name": "[concat(variables('appTierVmName'),'-', copyindex(1),'_OSDisk')]",
