@@ -7,4 +7,4 @@ Get-AzureRmResourceGroup -Name $ResourceGroupName | Remove-AzureRmResourceGroup 
 New-AzureRmResourceGroup -Name $ResourceGroupName -Location "West Europe"
 
 # Creates 3 tier infrastructure
-New-AzureRmResourceGroupDeployment -Name ToptalDevOpsAcademyDeployment -ResourceGroupName $ResourceGroupName -TemplateFile C:\Toptal\powershell\rh3tier.json -adminUsername davidem 
+New-AzureRmResourceGroupDeployment -Name ToptalDevOpsAcademyDeployment -ResourceGroupName $ResourceGroupName -TemplateFile .\rh3tier.json

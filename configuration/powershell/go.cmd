@@ -1,0 +1,1 @@
+powershell -File ".\create RG deployment.ps1"
