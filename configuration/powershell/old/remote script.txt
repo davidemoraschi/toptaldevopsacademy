@@ -1,0 +1,11 @@
+del C:\Users\Davide\.ssh\known_hosts
+
+ssh -oStrictHostKeyChecking=accept-new azureuser@storeg2pohixenheca.westeurope.cloudapp.azure.com
+
+ssh -oStrictHostKeyChecking=accept-new azureuser@storeg2pohixenheca.westeurope.cloudapp.azure.com "curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -"
+
+ssh -oStrictHostKeyChecking=accept-new azureuser@storeg2pohixenheca.westeurope.cloudapp.azure.com "sudo apt-get install -y nodejs"
+
+cat installnode.sh | ssh -oStrictHostKeyChecking=accept-new dmoraschi@storeg2pohixenheca.westeurope.cloudapp.azure.com "bash -"
+
+scp installnode.sh dmoraschi@storeg2pohixenheca.westeurope.cloudapp.azure.com:~
