@@ -105,6 +105,7 @@
     "redHatsku": "4-3",
     "Publisher": "RedHat",
     "Offer": "RHEL",
+    "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
     "webTierVmName": "web-vm",
     "appTierVmName": "app-vm",
     "databaseTierVmName": "sql-vm",
@@ -711,13 +712,24 @@
         "osProfile": {
           "computerName": "[concat('webserver',copyindex(1))]",
           "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]"
-        },
+          "adminPassword": "[parameters('adminPassword')]",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "[variables('sshKeyPath')]",
+                  "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUdW3dWBjw6omCaRaOYBAkXhdNe724xQjsxgL3deS0OElKz4Jvq+qgn9Yhcq1W8mRu0FBKbsvYVYlV4EaZPdDfW2+L7Mt7n5y0ek0n/33MnrgXOCYT3rd+ONTEJuW04Y/m/n7xsVXMFc6lYZC7ksy+olcIJfXFcLuNqUNa0Anncbc7C0CjK/HaJ5bd5BolocA0dCKdFd6fH2dFdymv+HC3GlP5wDYslByrQlsRxhtBbqJa6qoxj1c2J3A4c934nqSFc3UY1cMe+x6E5OXM7cBTPa0Anylu8DnJlQRES8OS0jPUBX6QRVXraXV3b9dDD+4AiB28Z2Wp5J/x255eYd3n davide@ACER-NEGRO"
+                }
+              ]
+            }
+          }       
+         },
         "storageProfile": {
                     "imageReference": {
                         "publisher": "[variables('imagePublisher')]",
                         "offer": "[variables('imageOffer')]",
-                        "sku": "[parameters('redHatsku')]",
+                        "sku": "[variables('redHatsku')]",
                         "version": "11.4.1812101005"
           },
           "osDisk": {
@@ -887,8 +899,8 @@
         },
         "storageProfile": {
           "imageReference": {
-            "publisher": "[variables('Publisher')]",
-            "offer": "[variables('Offer')]",
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
             "sku": "[variables('redHatsku')]",
             "version": "latest"
           },
