@@ -9,6 +9,13 @@
         "description": "Username for the Virtual Machines"
       }
     },
+    "customData": {
+      "type": "string",
+      "defaultValue": "echo customData",
+      "metadata": {
+        "description": "String passed down to the Virtual Machine."
+      }
+    },
     "adminPassword": {
       "minLength": 12,
       "type": "securestring",
@@ -883,6 +890,7 @@
         "osProfile": {
           "computerName": "jumpvm",
           "adminUsername": "[parameters('adminUsername')]",
+          "customData": "[base64(parameters('customData'))]",
           "linuxConfiguration": {
             "disablePasswordAuthentication": true,
             "ssh": {
