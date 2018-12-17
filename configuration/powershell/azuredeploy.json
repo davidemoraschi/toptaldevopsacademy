@@ -11,7 +11,6 @@
     },
     "customData": {
       "type": "string",
-      "defaultValue": "echo customData",
       "metadata": {
         "description": "String passed down to the Virtual Machine."
       }
@@ -703,8 +702,10 @@
         "osProfile": {
           "computerName": "[concat('webserver',copyindex(1))]",
           "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]",
+          "customData": "[base64(parameters('customData'))]",
           "linuxConfiguration": {
-            "disablePasswordAuthentication": true,
+            "disablePasswordAuthentication": false,
             "ssh": {
               "publicKeys": [
                 {
@@ -768,8 +769,10 @@
         "osProfile": {
           "computerName": "[concat('appserver',copyindex(1))]",
           "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]",
+          "customData": "[base64(parameters('customData'))]",
           "linuxConfiguration": {
-            "disablePasswordAuthentication": true,
+            "disablePasswordAuthentication": false,
             "ssh": {
               "publicKeys": [
                 {
@@ -833,8 +836,9 @@
         "osProfile": {
           "computerName": "[concat('databaseserver',copyindex(1))]",
           "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]",
           "linuxConfiguration": {
-            "disablePasswordAuthentication": true,
+            "disablePasswordAuthentication": false,
             "ssh": {
               "publicKeys": [
                 {
@@ -890,7 +894,6 @@
         "osProfile": {
           "computerName": "jumpvm",
           "adminUsername": "[parameters('adminUsername')]",
-          "customData": "[base64(parameters('customData'))]",
           "linuxConfiguration": {
             "disablePasswordAuthentication": true,
             "ssh": {
