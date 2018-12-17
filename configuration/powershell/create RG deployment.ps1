@@ -7,6 +7,7 @@ packages:
   - nginx
   - nodejs
   - npm
+  - nodejs-legacy
 write_files:
   - owner: www-data:www-data
   - path: /etc/nginx/sites-available/default
@@ -16,10 +17,10 @@ write_files:
         location / {
           proxy_pass http://localhost:3000;
           proxy_http_version 1.1;
-          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Upgrade `$http_upgrade;
           proxy_set_header Connection keep-alive;
           proxy_set_header Host $host;
-          proxy_cache_bypass $http_upgrade;
+          proxy_cache_bypass `$http_upgrade;
         }
       }
   - owner: azureuser:azureuser
@@ -52,7 +53,7 @@ Get-AzureRmResourceGroup -Name $ResourceGroupName | Remove-AzureRmResourceGroup 
 New-AzureRmResourceGroup -Name $ResourceGroupName -Location "West Europe"
 
 # Creates 3 tier infrastructure
-New-AzureRmResourceGroupDeployment -Name ToptalDevOpsAcademyDeployment -ResourceGroupName $ResourceGroupName -TemplateFile .\azuredeploy.json -adminUsername dmoraschi -adminPassword a1b2c3iiiiii -customData $customData
+New-AzureRmResourceGroupDeployment -Name ToptalDevOpsAcademyDeployment -ResourceGroupName $ResourceGroupName -TemplateFile .\azuredeploy.json -adminUsername dmoraschi -customData $customData
 
 del C:\Users\Davide\.ssh\known_hosts
 
