@@ -9,10 +9,16 @@
         "description": "Username for the Virtual Machines"
       }
     },
-    "customData": {
+    "customDataWeb": {
       "type": "string",
       "metadata": {
-        "description": "String passed down to the Virtual Machine."
+        "description": "String passed down to the Web Virtual Machine."
+      }
+    },
+    "customDataApi": {
+      "type": "string",
+      "metadata": {
+        "description": "String passed down to the API Virtual Machine."
       }
     },
     "adminPassword": {
@@ -703,7 +709,7 @@
           "computerName": "[concat('webserver',copyindex(1))]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]",
-          "customData": "[base64(parameters('customData'))]"
+          "customDataWeb": "[base64(parameters('customDataWeb'))]"
         },
         "storageProfile": {
           "imageReference": {
@@ -759,7 +765,7 @@
           "computerName": "[concat('appserver',copyindex(1))]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]",
-          "customData": "[base64(parameters('customData'))]"
+          "customDataApi": "[base64(parameters('customDataApi'))]"
         },
         "storageProfile": {
           "imageReference": {

@@ -1,0 +1,43 @@
+#cloud-config
+package_upgrade: true
+packages:
+  - nginx
+  - nodejs
+  - npm
+  - nodejs-legacy
+write_files:
+  - path: /etc/environment
+    permissions: 0644
+    content: |
+      PORT=80
+      DB:apilb
+write_files:
+  - owner: www-data:www-data
+  - path: /etc/nginx/sites-available/default
+    content: |
+      server {
+        listen 80;
+        location / {
+          proxy_pass http://localhost:3000;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade `$http_upgrade;
+          proxy_set_header Connection keep-alive;
+          proxy_set_header Host $host;
+          proxy_cache_bypass `$http_upgrade;
+        }
+      }
+runcmd:
+  - service nginx restart
+  - cd '/home/dmoraschi'
+  - git clone https://git.toptal.com/namikp/node-3tier-app.git
+  - cd '/home/dmoraschi/node-3tier-app'
+  - rm -f -R web
+  - cd '/home/dmoraschi/node-3tier-app/api' 
+  - npm init
+  - npm install express -y
+  - npm install
+  - npm start
+  
+# Capture all subprocess output into a logfile
+# Useful for troubleshooting cloud-init issues
+output: {all: '| tee -a /var/log/cloud-init-output.log'}
