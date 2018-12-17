@@ -53,12 +53,12 @@
       }
     },
     "sshKeyData": {
-      "type": "string",
-      "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUdW3dWBjw6omCaRaOYBAkXhdNe724xQjsxgL3deS0OElKz4Jvq+qgn9Yhcq1W8mRu0FBKbsvYVYlV4EaZPdDfW2+L7Mt7n5y0ek0n/33MnrgXOCYT3rd+ONTEJuW04Y/m/n7xsVXMFc6lYZC7ksy+olcIJfXFcLuNqUNa0Anncbc7C0CjK/HaJ5bd5BolocA0dCKdFd6fH2dFdymv+HC3GlP5wDYslByrQlsRxhtBbqJa6qoxj1c2J3A4c934nqSFc3UY1cMe+x6E5OXM7cBTPa0Anylu8DnJlQRES8OS0jPUBX6QRVXraXV3b9dDD+4AiB28Z2Wp5J/x255eYd3n davide@ACER-NEGRO",
-      "metadata": {
-        "description": "SSH rsa public key file as a string."
+        "type": "string",
+        "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUdW3dWBjw6omCaRaOYBAkXhdNe724xQjsxgL3deS0OElKz4Jvq+qgn9Yhcq1W8mRu0FBKbsvYVYlV4EaZPdDfW2+L7Mt7n5y0ek0n/33MnrgXOCYT3rd+ONTEJuW04Y/m/n7xsVXMFc6lYZC7ksy+olcIJfXFcLuNqUNa0Anncbc7C0CjK/HaJ5bd5BolocA0dCKdFd6fH2dFdymv+HC3GlP5wDYslByrQlsRxhtBbqJa6qoxj1c2J3A4c934nqSFc3UY1cMe+x6E5OXM7cBTPa0Anylu8DnJlQRES8OS0jPUBX6QRVXraXV3b9dDD+4AiB28Z2Wp5J/x255eYd3n davide@ACER-NEGRO",
+        "metadata": {
+          "description": "SSH rsa public key file as a string."
+        }
       }
-    }
   },
   "variables": {
     "vmSize": "Standard_D2_v2",
@@ -96,10 +96,12 @@
     "redHatsku": "7.3",
     "Publisher": "RedHat",
     "Offer": "RHEL",
+
     "imagePublisher": "Canonical",
     "imageOffer": "UbuntuServer",
     "ubuntuOSVersion": "16.04-LTS",
     "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
+
     "webTierVmName": "web-tier-vm",
     "appTierVmName": "app-tier-vm",
     "databaseTierVmName": "database-tier-vm",
@@ -371,11 +373,11 @@
       },
       "sku": {
         "name": "Aligned"
-      },
-      "properties": {
-        "platformFaultDomainCount": 2,
-        "platformUpdateDomainCount": 5
-      }
+          },
+        "properties": { 
+            "platformFaultDomainCount": 2,
+            "platformUpdateDomainCount": 5
+        }
     },
     {
       "type": "Microsoft.Network/loadBalancers",
@@ -678,7 +680,7 @@
       "location": "[parameters('location')]",
       "comments": " Web Tier VMs",
       "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('vmStorageAccountName'),'1')]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('vmStorageAccountName'),'1')]", 
         "[concat('Microsoft.Network/networkInterfaces/', variables('webTierVmNicName'), copyindex(1))]",
         "[concat('Microsoft.Compute/availabilitySets/', variables('availSetName'),'1')]"
       ],
@@ -709,14 +711,14 @@
           }
         },
         "storageProfile": {
-          "imageReference": {
-            "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer')]",
-            "sku": "[variables('ubuntuOSVersion')]",
-            "version": "latest"
-          },
+            "imageReference": {
+                "publisher": "[variables('imagePublisher')]",
+                "offer": "[variables('imageOffer')]",
+                "sku": "[variables('ubuntuOSVersion')]",
+                "version": "latest"
+              },
           "osDisk": {
-            "name": "[concat(variables('webTierVmName'),'-', copyindex(1),'_OSDisk')]",
+            "name":  "[concat(variables('webTierVmName'),'-', copyindex(1),'_OSDisk')]",
             "caching": "ReadWrite",
             "createOption": "FromImage"
           }
@@ -743,7 +745,7 @@
       "location": "[parameters('location')]",
       "comments": " App Tier VMs",
       "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('vmStorageAccountName'),'2')]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('vmStorageAccountName'),'2')]", 
         "[concat('Microsoft.Network/networkInterfaces/', variables('appTierVmNicName'), copyindex(1))]",
         "[concat('Microsoft.Compute/availabilitySets/',variables('availSetName'),'2')]"
       ],
@@ -774,12 +776,12 @@
           }
         },
         "storageProfile": {
-          "imageReference": {
-            "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer')]",
-            "sku": "[variables('ubuntuOSVersion')]",
-            "version": "latest"
-          },
+            "imageReference": {
+                "publisher": "[variables('imagePublisher')]",
+                "offer": "[variables('imageOffer')]",
+                "sku": "[variables('ubuntuOSVersion')]",
+                "version": "latest"
+              },
           "osDisk": {
             "name": "[concat(variables('appTierVmName'),'-', copyindex(1),'_OSDisk')]",
             "caching": "ReadWrite",
@@ -808,7 +810,7 @@
       "location": "[parameters('location')]",
       "comments": "Database Tier VMs",
       "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('vmStorageAccountName'),'3')]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('vmStorageAccountName'),'3')]", 
         "[concat('Microsoft.Network/networkInterfaces/', variables('databaseTierVmNicName'), copyindex(1))]",
         "[concat('Microsoft.Compute/availabilitySets/', variables('availSetName'),'3')]"
       ],
@@ -839,12 +841,12 @@
           }
         },
         "storageProfile": {
-          "imageReference": {
-            "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer')]",
-            "sku": "[variables('ubuntuOSVersion')]",
-            "version": "latest"
-          },
+            "imageReference": {
+                "publisher": "[variables('imagePublisher')]",
+                "offer": "[variables('imageOffer')]",
+                "sku": "[variables('ubuntuOSVersion')]",
+                "version": "latest"
+              },
           "osDisk": {
             "name": "[concat(variables('databaseTierVmName'),'-', copyindex(1),'_OSDisk')]",
             "caching": "ReadWrite",
@@ -873,7 +875,7 @@
       "location": "[parameters('location')]",
       "comments": "Jump VM",
       "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('vmStorageAccountName'),'4')]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('vmStorageAccountName'),'4')]", 
         "[concat('Microsoft.Network/networkInterfaces/', variables('jumpVmNicName'))]"
       ],
       "properties": {
@@ -896,12 +898,12 @@
           }
         },
         "storageProfile": {
-          "imageReference": {
-            "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer')]",
-            "sku": "[variables('ubuntuOSVersion')]",
-            "version": "latest"
-          },
+            "imageReference": {
+                "publisher": "[variables('imagePublisher')]",
+                "offer": "[variables('imageOffer')]",
+                "sku": "[variables('ubuntuOSVersion')]",
+                "version": "latest"
+              },
           "osDisk": {
             "name": "[concat(variables('jumpVmName'),'_OSDisk')]",
             "caching": "ReadWrite",
