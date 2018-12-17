@@ -5,12 +5,7 @@ packages:
   - nodejs
   - npm
   - nodejs-legacy
-write_files:
-  - path: /etc/environment
-    permissions: 0644
-    content: |
-      PORT=80
-      DB:apilb
+  - postgresql-client
 write_files:
   - owner: www-data:www-data
   - path: /etc/nginx/sites-available/default
@@ -27,6 +22,8 @@ write_files:
         }
       }
 runcmd:
+  - export PORT=3000
+  - export DB=postgres://dmoraschi@toptalpostgresql:Ct899E2M3AFy@toptalpostgresql.postgres.database.azure.com/postgres
   - service nginx restart
   - cd '/home/dmoraschi'
   - git clone https://git.toptal.com/namikp/node-3tier-app.git

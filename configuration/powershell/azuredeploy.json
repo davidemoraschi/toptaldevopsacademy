@@ -709,7 +709,7 @@
           "computerName": "[concat('webserver',copyindex(1))]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]",
-          "customDataWeb": "[base64(parameters('customDataWeb'))]"
+          "customData": "[base64(parameters('customDataWeb'))]"
         },
         "storageProfile": {
           "imageReference": {
@@ -765,7 +765,7 @@
           "computerName": "[concat('appserver',copyindex(1))]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]",
-          "customDataApi": "[base64(parameters('customDataApi'))]"
+          "customData": "[base64(parameters('customDataApi'))]"
         },
         "storageProfile": {
           "imageReference": {

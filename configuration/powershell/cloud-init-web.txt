@@ -6,12 +6,6 @@ packages:
   - npm
   - nodejs-legacy
 write_files:
-  - path: /etc/environment
-    permissions: 0644
-    content: |
-      PORT=80
-      API_HOST:10.0.1.5
-write_files:
   - owner: www-data:www-data
   - path: /etc/nginx/sites-available/default
     content: |
@@ -27,6 +21,8 @@ write_files:
         }
       }
 runcmd:
+  - export PORT=3000
+  - export API_HOST=10.0.1.6
   - service nginx restart
   - cd '/home/dmoraschi'
   - git clone https://git.toptal.com/namikp/node-3tier-app.git
