@@ -506,6 +506,8 @@
           {
             "name": "loadBalancerFrontEnd",
             "properties": {
+              "privateIPAddress": "10.0.1.250",
+              "privateIPAllocationMethod": "Static",
               "subnet": {
                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('webTierSubnetName'))]"
               }
