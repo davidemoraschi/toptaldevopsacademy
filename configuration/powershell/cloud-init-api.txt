@@ -33,7 +33,6 @@ runcmd:
   - npm init
   - npm install express -y
   - npm install
-  - npm start
   
 # Capture all subprocess output into a logfile
 # Useful for troubleshooting cloud-init issues
