@@ -92,7 +92,7 @@
     "jumpNSGName": "jump-nsg",
     "webLoadBalancerName": "web-lb",
     "weblbIPAddressName": "web-lb-pip",
-    "weblbDnsLabel": "[concat('dmoraschi.',uniqueString(resourceGroup().id))]",
+    "weblbDnsLabel": "[concat('dmoraschi.devops.',uniqueString(resourceGroup().id))]",
     "webLoadBalancerIPID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('weblbIPAddressName'))]",
     "webFrontEndIPConfigID": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations',variables('webLoadBalancerName'),'loadBalancerFrontEnd')]",
     "weblbBackendPoolID": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools',variables('webLoadBalancerName'),'loadBalancerBackend')]",
@@ -979,8 +979,8 @@
             "location": "[resourceGroup().location]",
             "name": "[concat(parameters('servers_toptaldevopsacademypostgresql_name'),'firewall')]",
             "properties": {
-                "startIpAddress": "0.0.0.0",
-                "endIpAddress": "255.255.255.255"
+                "startIpAddress": "10.0.2.1",
+                "endIpAddress": "10.0.2.254"
             }
         }
     ],
