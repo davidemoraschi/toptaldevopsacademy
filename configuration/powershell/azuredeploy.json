@@ -71,7 +71,7 @@
         "description": "SSH rsa public key file as a string."
       }
     },
-    "servers_toptaldevopsacademypostgresql_name": {
+    "PostgreSQLServerName": {
       "defaultValue": "toptaldevopsacademypostgresql",
       "type": "String"
   }
@@ -81,7 +81,7 @@
     "vmStorageAccountType": "Standard_GRS",
     "vmStorageAccountName": "[concat(uniqueString(resourceGroup().id),'storage')]",
     "diagStorageAccountName": "[concat(uniqueString(resourceGroup().id),'diagstorage')]",
-    "virtualNetworkName": "RedHat3Tier-vnet",
+    "virtualNetworkName": "Ubuntu-vnet",
     "webTierSubnetName": "web-tier-subnet",
     "appTierSubnetName": "app-tier-subnet",
     "databaseTierSubnetName": "database-tier-subnet",
@@ -111,25 +111,14 @@
     "appTierVmNicName": "[concat(variables('appTierVmName'), '-nic-')]",
     "databaseTierVmNicName": "[concat(variables('databaseTierVmName'), '-nic-')]",
     "jumpVmNicName": "[concat(variables('jumpVmName'), '-nic')]",
-    "redHatsku": "7.3",
-    "Publisher": "RedHat",
-    "Offer": "RHEL",
     "imagePublisher": "Canonical",
     "imageOffer": "UbuntuServer",
     "ubuntuOSVersion": "16.04-LTS",
     "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
     "webTierVmName": "web-tier-vm",
     "appTierVmName": "app-tier-vm",
-    "databaseTierVmName": "database-tier-vm",
-    "jumpVmName": "jump-vm",
-    "redHatTags": {
-      "type": "object",
-      "provider": "9d2c71fc-96ba-4b4a-93b3-14def5bc96fc"
-    },
-    "quickstartTags": {
-      "type": "object",
-      "name": "rhel-3tier-iaas"
-    }
+    "databaseTierVmName": "data-tier-vm",
+    "jumpVmName": "jump-vm"
   },
   "resources": [
     {
@@ -140,8 +129,6 @@
       "comments": "4 Storage accounts used to store the VM disks for each tier",
       "tags": {
         "displayName": "VM Storage Accounts",
-        "quickstartName": "[variables('quickstartTags').name]",
-        "provider": "[variables('redHatTags').provider]"
       },
       "copy": {
         "name": "vmStorageAccountLoop",
@@ -160,9 +147,7 @@
       "location": "[parameters('location')]",
       "comments": "Storage account used to store the diagnostics data",
       "tags": {
-        "displayName": "Diagnostics Storage Account",
-        "quickstartName": "[variables('quickstartTags').name]",
-        "provider": "[variables('redHatTags').provider]"
+        "displayName": "Diagnostics Storage Account"
       },
       "sku": {
         "name": "Standard_LRS"
@@ -177,9 +162,7 @@
       "location": "[parameters('location')]",
       "comments": "NSG for Web Subnet. Rules for allowing HTTP and HTTPS requests from internet are created",
       "tags": {
-        "displayName": "Web NSG",
-        "quickstartName": "[variables('quickstartTags').name]",
-        "provider": "[variables('redHatTags').provider]"
+        "displayName": "Web NSG"
       },
       "properties": {
         "securityRules": [
@@ -219,9 +202,7 @@
       "location": "[parameters('location')]",
       "comments": "NSG for App Subnet. By default, intra Vnet traffic is allowed and requests from internet are denied",
       "tags": {
-        "displayName": "App NSG",
-        "quickstartName": "[variables('quickstartTags').name]",
-        "provider": "[variables('redHatTags').provider]"
+        "displayName": "App NSG"
       },
       "properties": {
         "securityRules": []
@@ -234,9 +215,7 @@
       "location": "[parameters('location')]",
       "comments": "NSG for Database Subnet. By default, intra Vnet traffic is allowed and requests from internet are denied",
       "tags": {
-        "displayName": "Database NSG",
-        "quickstartName": "[variables('quickstartTags').name]",
-        "provider": "[variables('redHatTags').provider]"
+        "displayName": "Database NSG"
       },
       "properties": {
         "securityRules": []
@@ -249,9 +228,7 @@
       "location": "[parameters('location')]",
       "comments": "NSG for Jump Subnet. Rules for allowing SSH from internet are created",
       "tags": {
-        "displayName": "Jump NSG",
-        "quickstartName": "[variables('quickstartTags').name]",
-        "provider": "[variables('redHatTags').provider]"
+        "displayName": "Jump NSG"
       },
       "properties": {
         "securityRules": [
@@ -278,9 +255,7 @@
       "location": "[parameters('location')]",
       "comments": " Public IP used by the Jump VM",
       "tags": {
-        "displayName": "Jump VM Public IP",
-        "quickstartName": "[variables('quickstartTags').name]",
-        "provider": "[variables('redHatTags').provider]"
+        "displayName": "Jump VM Public IP"
       },
       "properties": {
         "publicIPAllocationMethod": "Static",
@@ -297,9 +272,7 @@
       "location": "[parameters('location')]",
       "comments": "Public IP used by the Web Server Load Balancer",
       "tags": {
-        "displayName": "Web LB Public IP",
-        "quickstartName": "[variables('quickstartTags').name]",
-        "provider": "[variables('redHatTags').provider]"
+        "displayName": "Web LB Public IP"
       },
       "properties": {
         "publicIPAllocationMethod": "Static",
@@ -316,9 +289,7 @@
       "location": "[parameters('location')]",
       "comments": "Virtual network for overall solution",
       "tags": {
-        "displayName": "Virtual Network",
-        "quickstartName": "[variables('quickstartTags').name]",
-        "provider": "[variables('redHatTags').provider]"
+        "displayName": "Virtual Network"
       },
       "dependsOn": [
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('webNSGName'))]",
@@ -379,9 +350,7 @@
       "location": "[parameters('location')]",
       "comments": "These are the Availability Sets for Web VMs, App VMs and Database VMs",
       "tags": {
-        "displayName": "Availability Sets",
-        "quickstartName": "[variables('quickstartTags').name]",
-        "provider": "[variables('redHatTags').provider]"
+        "displayName": "Availability Sets"
       },
       "copy": {
         "name": "availSetLoop",
@@ -402,9 +371,7 @@
       "location": "[parameters('location')]",
       "comments": "This Load Balancer is used to load balance Web traffic among Web Tier VMs",
       "tags": {
-        "displayName": "External Load Balancer",
-        "quickstartName": "[variables('quickstartTags').name]",
-        "provider": "[variables('redHatTags').provider]"
+        "displayName": "External Load Balancer"
       },
       "dependsOn": [
         "[concat('Microsoft.Network/publicIPAddresses/', variables('weblbIPAddressName'))]"
@@ -494,9 +461,7 @@
       "location": "[parameters('location')]",
       "comments": "This Internal Load Balancer is used to load balance traffic from Web VM's to Bussiness Tier VMs",
       "tags": {
-        "displayName": "Internal Load Balancer",
-        "quickstartName": "[variables('quickstartTags').name]",
-        "provider": "[variables('redHatTags').provider]"
+        "displayName": "Internal Load Balancer"
       },
       "dependsOn": [
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
@@ -613,9 +578,7 @@
       "location": "[parameters('location')]",
       "comments": "NICs for Web Tier VMs",
       "tags": {
-        "displayName": "Web Tier VM NICs",
-        "quickstartName": "[variables('quickstartTags').name]",
-        "provider": "[variables('redHatTags').provider]"
+        "displayName": "Web Tier VM NICs"
       },
       "dependsOn": [
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
@@ -651,9 +614,7 @@
       "location": "[parameters('location')]",
       "comments": "NICs for App Tier VMs",
       "tags": {
-        "displayName": "App Tier VM NICs",
-        "quickstartName": "[variables('quickstartTags').name]",
-        "provider": "[variables('redHatTags').provider]"
+        "displayName": "App Tier VM NICs"
       },
       "dependsOn": [
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
@@ -689,9 +650,7 @@
       "location": "[parameters('location')]",
       "comments": "NICs for Database Tier VMs",
       "tags": {
-        "displayName": "Database Tier VM NICs",
-        "quickstartName": "[variables('quickstartTags').name]",
-        "provider": "[variables('redHatTags').provider]"
+        "displayName": "Database Tier VM NICs"
       },
       "dependsOn": [
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
@@ -721,9 +680,7 @@
       "location": "[parameters('location')]",
       "comments": "NIC for Jump VM",
       "tags": {
-        "displayName": "Jump VM NIC",
-        "quickstartName": "[variables('quickstartTags').name]",
-        "provider": "[variables('redHatTags').provider]"
+        "displayName": "Jump VM NIC"
       },
       "dependsOn": [
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
@@ -859,61 +816,6 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(variables('databaseTierVmName'),'-', copyindex(1))]",
-      "apiVersion": "2017-03-30",
-      "location": "[parameters('location')]",
-      "comments": "Database Tier VMs",
-      "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('vmStorageAccountName'),'3')]",
-        "[concat('Microsoft.Network/networkInterfaces/', variables('databaseTierVmNicName'), copyindex(1))]",
-        "[concat('Microsoft.Compute/availabilitySets/', variables('availSetName'),'3')]"
-      ],
-      "copy": {
-        "name": "DatabaseTierVMLoop",
-        "count": "[parameters('databaseTierVmCount')]"
-      },
-      "properties": {
-        "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets',concat(variables('availSetName'),'3'))]"
-        },
-        "hardwareProfile": {
-          "vmSize": "[variables('vmSize')]"
-        },
-        "osProfile": {
-          "computerName": "[concat('databaseserver',copyindex(1))]",
-          "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]"
-        },
-        "storageProfile": {
-          "imageReference": {
-            "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer')]",
-            "sku": "[variables('ubuntuOSVersion')]",
-            "version": "latest"
-          },
-          "osDisk": {
-            "name": "[concat(variables('databaseTierVmName'),'-', copyindex(1),'_OSDisk')]",
-            "caching": "ReadWrite",
-            "createOption": "FromImage"
-          }
-        },
-        "networkProfile": {
-          "networkInterfaces": [
-            {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('databaseTierVmNicName'), copyindex(1)))]"
-            }
-          ]
-        },
-        "diagnosticsProfile": {
-          "bootDiagnostics": {
-            "enabled": true,
-            "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', variables('diagStorageAccountName'))).primaryEndpoints.blob]"
-          }
-        }
-      }
-    },
-    {
-      "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('jumpVmName')]",
       "apiVersion": "2017-03-30",
       "location": "[parameters('location')]",
@@ -976,10 +878,10 @@
             "type": "firewallrules",
             "apiVersion": "2016-02-01-privatepreview",
             "dependsOn": [
-                "[concat('Microsoft.DBforPostgreSQL/servers/', parameters('servers_toptaldevopsacademypostgresql_name'))]"
+                "[concat('Microsoft.DBforPostgreSQL/servers/', parameters('PostgreSQLServerName'))]"
             ],
             "location": "[resourceGroup().location]",
-            "name": "[concat(parameters('servers_toptaldevopsacademypostgresql_name'),'firewall')]",
+            "name": "[concat(parameters('PostgreSQLServerName'),'firewall')]",
             "properties": {
                 "startIpAddress": "0.0.0.0",
                 "endIpAddress": "255.255.255.255"
@@ -992,7 +894,7 @@
           "family": "Gen5",
           "capacity": 2
       },
-      "name": "[parameters('servers_toptaldevopsacademypostgresql_name')]",
+      "name": "[parameters('PostgreSQLServerName')]",
       "apiVersion": "2017-12-01-preview",
       "location": "westeurope",
       "scale": null,
