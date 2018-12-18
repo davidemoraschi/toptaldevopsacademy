@@ -6,6 +6,8 @@ packages:
   - npm
   - nodejs-legacy
   - postgresql-client
+  - libunwind8
+  - libcurl3
 write_files:
   - owner: www-data:www-data
   - path: /etc/nginx/sites-available/default

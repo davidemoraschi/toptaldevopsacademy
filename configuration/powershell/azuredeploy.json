@@ -92,7 +92,7 @@
     "jumpNSGName": "jump-nsg",
     "webLoadBalancerName": "web-lb",
     "weblbIPAddressName": "web-lb-pip",
-    "weblbDnsLabel": "[concat('weblb',uniqueString(resourceGroup().id))]",
+    "weblbDnsLabel": "dmoraschi-devops",
     "webLoadBalancerIPID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('weblbIPAddressName'))]",
     "webFrontEndIPConfigID": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations',variables('webLoadBalancerName'),'loadBalancerFrontEnd')]",
     "weblbBackendPoolID": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools',variables('webLoadBalancerName'),'loadBalancerBackend')]",

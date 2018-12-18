@@ -5,6 +5,8 @@ packages:
   - nodejs
   - npm
   - nodejs-legacy
+  - libunwind8
+  - libcurl3
 write_files:
   - owner: www-data:www-data
   - path: /etc/nginx/sites-available/default
@@ -22,7 +24,7 @@ write_files:
       }
 runcmd:
   - export PORT=3000
-  - export API_HOST=http://10.0.1.6
+  - export API_HOST=http://10.0.1.250
   - service nginx restart
   - cd '/home/dmoraschi'
   - git clone https://git.toptal.com/namikp/node-3tier-app.git
