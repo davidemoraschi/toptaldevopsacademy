@@ -98,6 +98,8 @@
     "internalFrontEndIPConfigID": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations',variables('internalLoadBalancerName'),'loadBalancerFrontEnd')]",
     "internallbBackendPoolID": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools',variables('internalLoadBalancerName'),'loadBalancerBackend')]",
     "internallbProbeSSHID": "[resourceId('Microsoft.Network/loadBalancers/probes',variables('internalLoadBalancerName'),'internallbProbeSSH')]",
+    "internallbProbeHttpID": "[resourceId('Microsoft.Network/loadBalancers/probes',variables('internalLoadBalancerName'),'internallbProbeHttp')]",
+    "internallbProbeHttpsID": "[resourceId('Microsoft.Network/loadBalancers/probes',variables('internalLoadBalancerName'),'internallbProbeHttps')]",
     "jumpIPAddressName": "jump-pip",
     "jumpDnsLabel": "dmoraschi-jump",
     "availSetName": "avail-set-",
@@ -514,70 +516,55 @@
         "loadBalancingRules": [
           {
               "name": "internallbruleSSH",
-              "etag": "W/\"08048e8c-545c-458d-85d9-b8f85dea3bc6\"",
               "properties": {
-                  "provisioningState": "Succeeded",
                   "frontendIPConfiguration": {
-                      "id": "[parameters('loadBalancers_internal_lb_id')]"
+                      "id": "[variables('internalFrontEndIPConfigID')]"
                   },
                   "frontendPort": 22,
                   "backendPort": 22,
-                  "enableFloatingIP": false,
                   "idleTimeoutInMinutes": 15,
                   "protocol": "Tcp",
-                  "enableTcpReset": false,
-                  "loadDistribution": "Default",
                   "backendAddressPool": {
-                      "id": "[parameters('loadBalancers_internal_lb_id_1')]"
+                      "id": "[variables('internallbBackendPoolID')]"
                   },
                   "probe": {
-                      "id": "[parameters('loadBalancers_internal_lb_id_2')]"
+                      "id": "[variables('internallbProbeSSHID')]"
                   }
               }
           },
           {
               "name": "internalLBRuleForlb80IP",
-              "etag": "W/\"08048e8c-545c-458d-85d9-b8f85dea3bc6\"",
               "properties": {
-                  "provisioningState": "Succeeded",
                   "frontendIPConfiguration": {
-                      "id": "[parameters('loadBalancers_internal_lb_id_3')]"
+                      "id": "[variables('internalFrontEndIPConfigID')]"
                   },
                   "frontendPort": 80,
                   "backendPort": 80,
-                  "enableFloatingIP": false,
                   "idleTimeoutInMinutes": 5,
                   "protocol": "Tcp",
-                  "enableTcpReset": false,
-                  "loadDistribution": "Default",
                   "backendAddressPool": {
-                      "id": "[parameters('loadBalancers_internal_lb_id_4')]"
+                      "id": "[variables('internallbBackendPoolID')]"
                   },
                   "probe": {
-                      "id": "[parameters('loadBalancers_internal_lb_id_5')]"
+                      "id": "[variables('internallbProbeHttpID')]"
                   }
               }
           },
           {
               "name": "internalLBRuleForlb443IP",
-              "etag": "W/\"08048e8c-545c-458d-85d9-b8f85dea3bc6\"",
               "properties": {
-                  "provisioningState": "Succeeded",
                   "frontendIPConfiguration": {
-                      "id": "[parameters('loadBalancers_internal_lb_id_6')]"
+                      "id": "[variables('internalFrontEndIPConfigID')]"
                   },
                   "frontendPort": 443,
                   "backendPort": 443,
-                  "enableFloatingIP": false,
                   "idleTimeoutInMinutes": 5,
                   "protocol": "Tcp",
-                  "enableTcpReset": false,
-                  "loadDistribution": "Default",
                   "backendAddressPool": {
-                      "id": "[parameters('loadBalancers_internal_lb_id_7')]"
+                      "id": "[variables('internallbBackendPoolID')]"
                   },
                   "probe": {
-                      "id": "[parameters('loadBalancers_internal_lb_id_8')]"
+                      "id": "[variables('internallbProbeHttpsID')]"
                   }
               }
           }
@@ -585,9 +572,7 @@
       "probes": [
           {
               "name": "internallbProbeSSH",
-              "etag": "W/\"08048e8c-545c-458d-85d9-b8f85dea3bc6\"",
               "properties": {
-                  "provisioningState": "Succeeded",
                   "protocol": "Tcp",
                   "port": 22,
                   "intervalInSeconds": 15,
@@ -596,9 +581,7 @@
           },
           {
               "name": "internallbProbeHttp",
-              "etag": "W/\"08048e8c-545c-458d-85d9-b8f85dea3bc6\"",
               "properties": {
-                  "provisioningState": "Succeeded",
                   "protocol": "Tcp",
                   "port": 80,
                   "intervalInSeconds": 5,
@@ -607,9 +590,7 @@
           },
           {
               "name": "internallbProbeHttps",
-              "etag": "W/\"08048e8c-545c-458d-85d9-b8f85dea3bc6\"",
               "properties": {
-                  "provisioningState": "Succeeded",
                   "protocol": "Tcp",
                   "port": 443,
                   "intervalInSeconds": 5,
