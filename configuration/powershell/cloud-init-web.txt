@@ -22,10 +22,11 @@ write_files:
       }
 runcmd:
   - export PORT=3000
-  - export API_HOST=10.0.1.5
+  - export API_HOST=10.0.1.6
   - service nginx restart
   - cd '/home/dmoraschi'
   - git clone https://git.toptal.com/namikp/node-3tier-app.git
+  - chown -R dmoraschi:dmoraschi node-3tier-app/
   - cd '/home/dmoraschi/node-3tier-app'
   - rm -f -R api
   - cd '/home/dmoraschi/node-3tier-app/web' 

@@ -70,8 +70,12 @@
       "metadata": {
         "description": "SSH rsa public key file as a string."
       }
-    }
-  },
+    },
+    "servers_toptaldevopsacademypostgresql_name": {
+      "defaultValue": "toptaldevopsacademypostgresql",
+      "type": "String"
+  }
+   },
   "variables": {
     "vmSize": "Standard_D2_v2",
     "vmStorageAccountType": "Standard_GRS",
@@ -88,7 +92,7 @@
     "jumpNSGName": "jump-nsg",
     "webLoadBalancerName": "web-lb",
     "weblbIPAddressName": "web-lb-pip",
-    "weblbDnsLabel": "[concat('weblb',uniqueString(resourceGroup().id))]",
+    "weblbDnsLabel": "[concat('dmoraschi.',uniqueString(resourceGroup().id))]",
     "webLoadBalancerIPID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('weblbIPAddressName'))]",
     "webFrontEndIPConfigID": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations',variables('webLoadBalancerName'),'loadBalancerFrontEnd')]",
     "weblbBackendPoolID": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools',variables('webLoadBalancerName'),'loadBalancerBackend')]",
@@ -962,7 +966,48 @@
           }
         }
       }
-    }
+    },
+    {
+      "type": "Microsoft.DBforPostgreSQL/servers",
+      "resources": [
+        {
+            "type": "firewallrules",
+            "apiVersion": "2016-02-01-privatepreview",
+            "dependsOn": [
+                "[concat('Microsoft.DBforPostgreSQL/servers/', parameters('servers_toptaldevopsacademypostgresql_name'))]"
+            ],
+            "location": "[resourceGroup().location]",
+            "name": "[concat(parameters('servers_toptaldevopsacademypostgresql_name'),'firewall')]",
+            "properties": {
+                "startIpAddress": "0.0.0.0",
+                "endIpAddress": "255.255.255.255"
+            }
+        }
+    ],
+      "sku": {
+          "name": "B_Gen5_2",
+          "tier": "Basic",
+          "family": "Gen5",
+          "capacity": 2
+      },
+      "name": "[parameters('servers_toptaldevopsacademypostgresql_name')]",
+      "apiVersion": "2017-12-01-preview",
+      "location": "westeurope",
+      "scale": null,
+      "properties": {
+        "administratorLogin": "[parameters('adminUsername')]",
+        "administratorLoginPassword": "[parameters('adminPassword')]",
+          "storageProfile": {
+              "storageMB": 51200,
+              "backupRetentionDays": 7,
+              "geoRedundantBackup": "Disabled"
+          },
+          "version": "10",
+          "sslEnforcement": "Disabled",
+          "createMode": "Default"
+      },
+      "dependsOn": []
+  }
   ],
   "outputs": {
     "webLoadBalancerIP": {

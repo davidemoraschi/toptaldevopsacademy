@@ -23,17 +23,20 @@ write_files:
       }
 runcmd:
   - export PORT=3000
-  - export DB=postgres://dmoraschi@toptalpostgresql:Ct899E2M3AFy@toptalpostgresql.postgres.database.azure.com/postgres
+  - export DB=postgres://dmoraschi@toptaldevopsacademypostgresql:Ct899E2M3AFy@toptaldevopsacademypostgresql.postgres.database.azure.com/postgres
   - service nginx restart
   - cd '/home/dmoraschi'
   - git clone https://git.toptal.com/namikp/node-3tier-app.git
+  - chown -R dmoraschi:dmoraschi node-3tier-app/
   - cd '/home/dmoraschi/node-3tier-app'
   - rm -f -R web
   - cd '/home/dmoraschi/node-3tier-app/api' 
   - npm init
   - npm install express -y
+  - chown -R dmoraschi:dmoraschi /home/dmoraschi/node-3tier-app/
   - npm install
-  
+  - npm start
+
 # Capture all subprocess output into a logfile
 # Useful for troubleshooting cloud-init issues
 output: {all: '| tee -a /var/log/cloud-init-output.log'}

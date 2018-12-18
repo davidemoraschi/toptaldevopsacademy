@@ -1,0 +1,114 @@
+"resources": [
+{
+  "apiVersion": "2016-02-01-privatepreview",
+  "name": "[variables('serverName')]",
+  "type": "Microsoft.DBforPostgreSQL/servers",
+  "sku": {
+    "name": "[variables('skuNamePG')]",
+    "tier": "[parameters('postgresPricingTier')]",
+    "capacity": "[parameters('postgresComputeUnit')]",
+    "size": "[mul(parameters('postgresStorageGB'), 1024)]"
+  },
+  "location": "[parameters('postgresLocation')]",
+  "properties": {
+    "version": "[parameters('postgresVersion')]",
+    "administratorLogin": "[parameters('postgresAdminLoginName')]",
+    "administratorLoginPassword": "[parameters('postgresAdminPassword')]",
+    "storageMB": "[mul(parameters('postgresStorageGB'), 1024)]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2017-04-30-preview",
+      "name": "[variables('databaseName')]",
+      "type": "databases",
+      "location": "[parameters('postgresLocation')]",
+      "tags": {
+        "displayName": "PSQLDatabase"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('serverName'))]"
+      ],
+      "properties": {
+      }
+    },
+    {
+      "apiVersion": "2017-04-30-preview",
+      "name": "PSQLServerFirewallRule",
+      "type": "firewallrules",
+      "location": "[parameters('postgresLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('serverName'))]"
+      ],
+      "properties": {
+        "endIpAddress": "255.255.255.255",
+        "startIpAddress": "0.0.0.0"
+      }
+    },
+    {
+      "type": "Microsoft.Insights/alertRules",
+      "name": "CPU-Alert",
+      "apiVersion": "2016-03-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('serverName'))]"
+      ],
+      "properties": {
+          "name": "CPU-Alert",
+          "description": "Default alert which notify when cpu percent is greater than 80%",
+          "isEnabled": "true",
+          "condition": {
+              "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
+              "dataSource": {
+                  "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
+                  "resourceUri": "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('serverName'))]",
+                  "metricName": "cpu_percent"
+              },
+              "operator": "GreaterThan",
+              "threshold": "80",
+              "windowSize": "00:05:00",
+              "timeAggregation": "Average"
+          },
+        "actions": [
+          {
+            "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
+            "sendToServiceOwners": "true",
+            "customEmails": "[variables('customEmails')]"
+          }
+        ]
+      }
+    },
+    {
+        "type": "Microsoft.Insights/alertRules",
+        "name": "Storage-Alert",
+        "apiVersion": "2016-03-01",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+            "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('serverName'))]"
+        ],
+        "properties": {
+            "name": "Storate_Alert",
+            "description": "Default alert which notify when storage percent is greater than 80%",
+            "isEnabled": "true",
+            "condition": {
+                "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
+                "dataSource": {
+                    "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
+                    "resourceUri": "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('serverName'))]",
+                    "metricName": "storage_percent"
+                },
+                "operator": "GreaterThan",
+                "threshold": "80",
+                "windowSize": "00:05:00",
+                "timeAggregation": "Average"
+            },
+          "actions": [
+            {
+              "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
+              "sendToServiceOwners": "true",
+              "customEmails": "[variables('customEmails')]"
+            }
+          ]
+        }
+    }
+  ]
+}
