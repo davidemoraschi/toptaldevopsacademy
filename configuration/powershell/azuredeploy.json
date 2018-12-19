@@ -729,55 +729,6 @@
       }
     },
     {
-      "type": "Microsoft.Compute/virtualMachineScaleSets",
-      "name": "myScaleSet",
-      "location": "[parameters('location')]",
-      "apiVersion": "2017-12-01",
-      "sku": {
-        "name": "[variables('vmSize')]",
-        "capacity": "2"
-      },
-      "properties": {
-        "upgradePolicy": {
-          "mode": "Automatic"
-        },
-        "virtualMachineProfile": {
-          "osProfile": {
-            "computerName": "[concat('webserver',copyindex(1))]",
-            "adminUsername": "[parameters('adminUsername')]",
-            "adminPassword": "[parameters('adminPassword')]",
-            "customData": "[base64(parameters('customDataWeb'))]"
-          },
-          "storageProfile": {
-            "imageReference": {
-              "publisher": "[variables('imagePublisher')]",
-              "offer": "[variables('imageOffer')]",
-              "sku": "[variables('ubuntuOSVersion')]",
-              "version": "latest"
-            },
-            "osDisk": {
-              "name": "[concat(variables('webTierVmName'),'-', copyindex(1),'-disk')]",
-              "caching": "ReadWrite",
-              "createOption": "FromImage"
-            }
-          },
-          "networkProfile": {
-            "networkInterfaces": [
-              {
-                "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('webTierVmNicName'), copyindex(1)))]"
-              }
-            ]
-          },
-          "diagnosticsProfile": {
-            "bootDiagnostics": {
-              "enabled": true,
-              "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', variables('diagStorageAccountName'))).primaryEndpoints.blob]"
-            }
-          }        
-        }
-      }
-    },
-    {
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[concat(variables('appTierVmName'),'-', copyindex(1))]",
       "apiVersion": "2017-03-30",
