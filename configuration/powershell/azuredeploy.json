@@ -73,7 +73,7 @@
     },
     "PostgreSQLServerName": {
       "defaultValue": "toptaldevopsacademypostgresql",
-      "type": "String"
+      "type": "string"
   }
    },
   "variables": {
@@ -81,9 +81,9 @@
     "vmStorageAccountType": "Standard_GRS",
     "vmStorageAccountName": "[concat(uniqueString(resourceGroup().id),'storage')]",
     "diagStorageAccountName": "[concat(uniqueString(resourceGroup().id),'diagstorage')]",
-    "virtualNetworkName": "Ubuntu-vnet",
-    "webTierSubnetName": "web-tier-subnet",
-    "appTierSubnetName": "app-tier-subnet",
+    "virtualNetworkName": "node-3tier-vnet",
+    "webTierSubnetName": "node-3tier-web-subnet",
+    "appTierSubnetName": "node-3tier-app-subnet",
     "databaseTierSubnetName": "database-tier-subnet",
     "jumpSubnetName": "jump-subnet",
     "webNSGName": "web-tier-nsg",
@@ -319,15 +319,6 @@
               "addressPrefix": "10.0.2.0/24",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('appNSGName'))]"
-              }
-            }
-          },
-          {
-            "name": "[variables('databaseTierSubnetName')]",
-            "properties": {
-              "addressPrefix": "10.0.3.0/24",
-              "networkSecurityGroup": {
-                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('databaseNSGName'))]"
               }
             }
           },

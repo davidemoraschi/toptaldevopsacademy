@@ -1,4 +1,4 @@
-﻿$ResourceGroupName="ToptalDevOpsAcademy"
+﻿$ResourceGroupName="toptaldevopsacademy"
 
 #https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-automate-vm-deployment
 $customDataWeb = Get-Content -Raw -Path .\cloud-init-web.txt 
