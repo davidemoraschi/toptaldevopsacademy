@@ -84,13 +84,11 @@
     "virtualNetworkName": "node-3tier-vnet",
     "webTierSubnetName": "node-3tier-web-subnet",
     "appTierSubnetName": "node-3tier-app-subnet",
-    "databaseTierSubnetName": "database-tier-subnet",
-    "jumpSubnetName": "jump-subnet",
-    "webNSGName": "web-tier-nsg",
-    "appNSGName": "app-tier-nsg",
-    "databaseNSGName": "database-tier-nsg",
-    "jumpNSGName": "jump-nsg",
-    "webLoadBalancerName": "web-lb",
+    "jumpSubnetName": "node-3tier-mgm-subnet",
+    "webNSGName": "node-3tier-web-nsg",
+    "appNSGName": "node-3tier-app-nsg",
+    "jumpNSGName": "node-3tier-mgm-nsg",
+    "webLoadBalancerName": "node-3tier-web-lbl",
     "weblbIPAddressName": "web-lb-pip",
     "weblbDnsLabel": "dmoraschi-devops",
     "webLoadBalancerIPID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('weblbIPAddressName'))]",
@@ -98,27 +96,25 @@
     "weblbBackendPoolID": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools',variables('webLoadBalancerName'),'loadBalancerBackend')]",
     "weblbProbeHttpID": "[resourceId('Microsoft.Network/loadBalancers/probes',variables('webLoadBalancerName'),'weblbProbeHttp')]",
     "weblbProbeHttpsID": "[resourceId('Microsoft.Network/loadBalancers/probes',variables('webLoadBalancerName'),'weblbProbeHttps')]",
-    "internalLoadBalancerName": "internal-lb",
+    "internalLoadBalancerName": "node-3tier-app-lbl",
     "internalFrontEndIPConfigID": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations',variables('internalLoadBalancerName'),'loadBalancerFrontEnd')]",
     "internallbBackendPoolID": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools',variables('internalLoadBalancerName'),'loadBalancerBackend')]",
     "internallbProbeSSHID": "[resourceId('Microsoft.Network/loadBalancers/probes',variables('internalLoadBalancerName'),'internallbProbeSSH')]",
     "internallbProbeHttpID": "[resourceId('Microsoft.Network/loadBalancers/probes',variables('internalLoadBalancerName'),'internallbProbeHttp')]",
     "internallbProbeHttpsID": "[resourceId('Microsoft.Network/loadBalancers/probes',variables('internalLoadBalancerName'),'internallbProbeHttps')]",
-    "jumpIPAddressName": "jump-pip",
-    "jumpDnsLabel": "dmoraschi-jump",
-    "availSetName": "avail-set-",
+    "jumpIPAddressName": "node-3tier-mgm-pip",
+    "jumpDnsLabel": "dmoraschi-mgm",
+    "availSetName": "node-3tier-avs-",
     "webTierVmNicName": "[concat(variables('webTierVmName'), '-nic-')]",
     "appTierVmNicName": "[concat(variables('appTierVmName'), '-nic-')]",
-    "databaseTierVmNicName": "[concat(variables('databaseTierVmName'), '-nic-')]",
     "jumpVmNicName": "[concat(variables('jumpVmName'), '-nic')]",
     "imagePublisher": "Canonical",
     "imageOffer": "UbuntuServer",
     "ubuntuOSVersion": "16.04-LTS",
     "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
-    "webTierVmName": "web-tier-vm",
-    "appTierVmName": "app-tier-vm",
-    "databaseTierVmName": "data-tier-vm",
-    "jumpVmName": "jump-vm"
+    "webTierVmName": "node-3tier-web-vm",
+    "appTierVmName": "node-3tier-app-vm",
+    "jumpVmName": "node-3tier-mgm-vm"
   },
   "resources": [
     {
@@ -210,19 +206,6 @@
     },
     {
       "type": "Microsoft.Network/networkSecurityGroups",
-      "name": "[variables('databaseNSGName')]",
-      "apiVersion": "2016-03-30",
-      "location": "[parameters('location')]",
-      "comments": "NSG for Database Subnet. By default, intra Vnet traffic is allowed and requests from internet are denied",
-      "tags": {
-        "displayName": "Database NSG"
-      },
-      "properties": {
-        "securityRules": []
-      }
-    },
-    {
-      "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('jumpNSGName')]",
       "apiVersion": "2016-03-30",
       "location": "[parameters('location')]",
@@ -294,7 +277,6 @@
       "dependsOn": [
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('webNSGName'))]",
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('appNSGName'))]",
-        "[concat('Microsoft.Network/networkSecurityGroups/', variables('databaseNSGName'))]",
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('jumpNSGName'))]"
       ],
       "properties": {
@@ -629,36 +611,6 @@
                   "id": "[variables('internallbBackendPoolID')]"
                 }
               ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(variables('databaseTierVmNicName'), copyindex(1))]",
-      "apiVersion": "2016-03-30",
-      "location": "[parameters('location')]",
-      "comments": "NICs for Database Tier VMs",
-      "tags": {
-        "displayName": "Database Tier VM NICs"
-      },
-      "dependsOn": [
-        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
-      ],
-      "copy": {
-        "name": "DatabaseTierNicLoop",
-        "count": "[parameters('databaseTierVmCount')]"
-      },
-      "properties": {
-        "ipConfigurations": [
-          {
-            "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "subnet": {
-                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('databaseTierSubnetName'))]"
-              }
             }
           }
         ]
