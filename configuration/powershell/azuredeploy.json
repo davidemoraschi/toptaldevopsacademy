@@ -79,8 +79,8 @@
   "variables": {
     "vmSize": "Standard_D2_v2",
     "vmStorageAccountType": "Standard_GRS",
-    "vmStorageAccountName": "[concat(uniqueString(resourceGroup().id),'storage')]",
-    "diagStorageAccountName": "[concat(uniqueString(resourceGroup().id),'diagstorage')]",
+    "vmStorageAccountName": "node3tierstorage",
+    "diagStorageAccountName": "node3tierdiagstorage",
     "virtualNetworkName": "node-3tier-vnet",
     "webTierSubnetName": "node-3tier-web-subnet",
     "appTierSubnetName": "node-3tier-app-subnet",
@@ -89,8 +89,8 @@
     "appNSGName": "node-3tier-app-nsg",
     "jumpNSGName": "node-3tier-mgm-nsg",
     "webLoadBalancerName": "node-3tier-web-lbl",
-    "weblbIPAddressName": "web-lb-pip",
-    "weblbDnsLabel": "dmoraschi-devops",
+    "weblbIPAddressName": "node-3tier-web-pip",
+    "weblbDnsLabel": "node-3tier-web-dmoraschi",
     "webLoadBalancerIPID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('weblbIPAddressName'))]",
     "webFrontEndIPConfigID": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations',variables('webLoadBalancerName'),'loadBalancerFrontEnd')]",
     "weblbBackendPoolID": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools',variables('webLoadBalancerName'),'loadBalancerBackend')]",
@@ -103,7 +103,7 @@
     "internallbProbeHttpID": "[resourceId('Microsoft.Network/loadBalancers/probes',variables('internalLoadBalancerName'),'internallbProbeHttp')]",
     "internallbProbeHttpsID": "[resourceId('Microsoft.Network/loadBalancers/probes',variables('internalLoadBalancerName'),'internallbProbeHttps')]",
     "jumpIPAddressName": "node-3tier-mgm-pip",
-    "jumpDnsLabel": "dmoraschi-mgm",
+    "jumpDnsLabel": "node-3tier-mgm-dmoraschi",
     "availSetName": "node-3tier-avs-",
     "webTierVmNicName": "[concat(variables('webTierVmName'), '-nic-')]",
     "appTierVmNicName": "[concat(variables('appTierVmName'), '-nic-')]",
@@ -201,7 +201,34 @@
         "displayName": "App NSG"
       },
       "properties": {
-        "securityRules": []
+        "securityRules": [
+          {
+            "name": "HTTP-allow",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80",
+              "sourceAddressPrefix": "[parameters('remoteAllowedCIDR')]",
+              "destinationAddressPrefix": "10.0.2.0/24",
+              "access": "Allow",
+              "priority": 110,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "HTTPS-allow",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "443",
+              "sourceAddressPrefix": "[parameters('remoteAllowedCIDR')]",
+              "destinationAddressPrefix": "10.0.2.0/24",
+              "access": "Allow",
+              "priority": 120,
+              "direction": "Inbound"
+            }
+          }
+        ]
       }
     },
     {
@@ -681,7 +708,7 @@
             "version": "latest"
           },
           "osDisk": {
-            "name": "[concat(variables('webTierVmName'),'-', copyindex(1),'_OSDisk')]",
+            "name": "[concat(variables('webTierVmName'),'-', copyindex(1),'-disk')]",
             "caching": "ReadWrite",
             "createOption": "FromImage"
           }
@@ -737,7 +764,7 @@
             "version": "latest"
           },
           "osDisk": {
-            "name": "[concat(variables('appTierVmName'),'-', copyindex(1),'_OSDisk')]",
+            "name": "[concat(variables('appTierVmName'),'-', copyindex(1),'-disk')]",
             "caching": "ReadWrite",
             "createOption": "FromImage"
           }
@@ -794,7 +821,7 @@
             "version": "latest"
           },
           "osDisk": {
-            "name": "[concat(variables('jumpVmName'),'_OSDisk')]",
+            "name": "[concat(variables('jumpVmName'),'-disk')]",
             "caching": "ReadWrite",
             "createOption": "FromImage"
           }
@@ -832,8 +859,8 @@
         }
     ],
       "sku": {
-          "name": "B_Gen5_2",
-          "tier": "Basic",
+          "name": "GP_Gen5_2",
+          "tier": "GeneralPurpose",
           "family": "Gen5",
           "capacity": 2
       },
@@ -857,19 +884,19 @@
   }
   ],
   "outputs": {
-    "webLoadBalancerIP": {
+    "node-3tier-web-pip": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('weblbIPAddressName'))).ipAddress]"
     },
-    "webLoadBalancerFqdn": {
+    "node-3tier-web-dns": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('weblbIPAddressName'))).dnsSettings.fqdn]"
     },
-    "jumpVMIP": {
+    "node-3tier-mgm-pip": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('jumpIPAddressName'))).ipAddress]"
     },
-    "jumpVMFqdn": {
+    "node-3tier-mgm-dns": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('jumpIPAddressName'))).dnsSettings.fqdn]"
     }

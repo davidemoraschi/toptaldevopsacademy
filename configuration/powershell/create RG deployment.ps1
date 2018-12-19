@@ -13,9 +13,12 @@ New-AzureRmResourceGroup -Name $ResourceGroupName -Location "West Europe"
 # Creates 3 tier infrastructure
 New-AzureRmResourceGroupDeployment -Name ToptalDevOpsAcademyDeployment -ResourceGroupName $ResourceGroupName -TemplateFile .\azuredeploy.json -adminUsername dmoraschi -customDataWeb $customDataWeb -customDataApi $customDataApi
 
-del C:\Users\Davide\.ssh\known_hosts
+# del C:\Users\Davide\.ssh\known_hosts
+$FileName = "C:\Users\Davide\.ssh\known_hosts"
+if (Test-Path $FileName) 
+{
+  Remove-Item $FileName
+}
 
-#ssh -oStrictHostKeyChecking=accept-new dmoraschi@dmoraschi-jump.westeurope.cloudapp.azure.com "curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -"
-
-ssh -oStrictHostKeyChecking=accept-new dmoraschi@dmoraschi-jump.westeurope.cloudapp.azure.com ##### "sudo apt-get install -y nodejs"
+ssh -oStrictHostKeyChecking=accept-new dmoraschi@node-3tier-mgm-dmoraschi.westeurope.cloudapp.azure.com
 
